@@ -2,6 +2,8 @@
 
 Приложение для очистки USB устройств
 
+[Скачать для Windows](http://apps.manchenkoff.me/protego/downloads/protego.exe Download Protego)
+
 ### Функционал 
 
 - Удобный и приятный интерфейс
