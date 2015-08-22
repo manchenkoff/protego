@@ -1,0 +1,101 @@
+﻿<Window x:Class="Protego.GUI.Main"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Protego.GUI"
+        mc:Ignorable="d"
+        Title="Protego - USB Security" Height="600" Width="800" Icon="/Protego;component/Resources/usb.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontSize="14.667" Closing="FormClosing">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel x:Name="navigationBar" Margin="0" Background="#FF5EB3E9">
+            <Button x:Name="buttonShowDevices" Padding="20" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="Выбор устройства" Click="showDevicesSection">
+                <Image Source="/Protego;component/Resources/drives.png" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Button>
+            <Button x:Name="buttonShowCleaner" Padding="20" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="Параметры очистки" Click="showCleanerSection">
+                <Image Source="/Protego;component/Resources/clean.png" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Button>
+            <Button x:Name="buttonShowSettings" Padding="20" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="Настройки программы" Click="showSettingsSection">
+                <Image Source="/Protego;component/Resources/settings.png" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Button>
+            <Label x:Name="helpLabel" Content="О программе" VerticalAlignment="Bottom" Margin="0,130,0,0" HorizontalAlignment="Center" FontStyle="Italic" Cursor="Help" PreviewMouseDown="helpClick"/>
+        </StackPanel>
+        <Grid x:Name="gridDevices" Grid.Column="1" Margin="0" Visibility="Visible" d:IsHidden="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90"/>
+                <RowDefinition/>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="headerDevices" Content="Выберите устройство" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" FontSize="26.667"/>
+            <ComboBox x:Name="comboDevices" ItemsSource="{Binding Drives}" Margin="20,100,20,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Padding="10,0,0,0" VerticalContentAlignment="Center" FontSize="18.667" SelectionChanged="comboDeviceSelected"/>
+            <Button x:Name="buttonRefreshList" Content="Обновить" HorizontalAlignment="Right" Margin="0,160,20,0" Grid.Row="1" VerticalAlignment="Top" Width="130" Padding="5" Background="{x:Null}" BorderBrush="#FF5EB3E9" BorderThickness="2" Foreground="#FF5EB3E9" FontSize="16" Click="updateDeviceList"/>
+            <Button x:Name="buttonClose" Content="Закрыть" HorizontalAlignment="Right" Margin="0,0,20,0" Grid.Row="2" VerticalAlignment="Center" Width="130" Padding="5" Background="{x:Null}" BorderBrush="#FF5EB3E9" BorderThickness="2" Foreground="#FF5EB3E9" FontSize="16" Click="closeWindow"/>
+            <Button x:Name="buttonToClean" Content="Перейти к очистке" HorizontalAlignment="Right" Margin="0,0,160,0" Grid.Row="2" VerticalAlignment="Center" Width="160" Padding="5" Background="{x:Null}" BorderBrush="#FF5EB3E9" BorderThickness="2" Foreground="#FF5EB3E9" FontSize="16" Click="goToCleanSection" IsEnabled="False"/>
+        </Grid>
+        <Grid x:Name="gridCleaner" Margin="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90"/>
+                <RowDefinition/>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="headerCleaner" Content="Параметры очистки устройства" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" FontSize="26.667"/>
+            <GroupBox x:Name="groupDangerFiles" Header="Подозрительные файлы" Margin="3" Grid.Row="1" FontSize="16" Padding="3">
+                <ListView x:Name="listDangerFiles" Margin="0" ItemsSource="{Binding DangerFiles}" SelectionMode="Multiple">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Название файла" Width="200" DisplayMemberBinding="{Binding Name}"/>
+                            <GridViewColumn Header="Местоположение" Width="200" DisplayMemberBinding="{Binding FullName}"/>
+                            <GridViewColumn Header="Расширение" Width="110" DisplayMemberBinding="{Binding Extension}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </GroupBox>
+            <Button x:Name="buttonDeleteAll" Content="Удалить все" HorizontalAlignment="Right" Margin="0,0,20,0" Grid.Row="2" VerticalAlignment="Center" Width="130" Padding="5" Background="{x:Null}" BorderBrush="#FF5EB3E9" BorderThickness="2" Foreground="#FF5EB3E9" FontSize="16" Click="deleteAllDangers"/>
+            <Button x:Name="buttonDeleteSelected" Content="Удалить выбранное" HorizontalAlignment="Right" Margin="0,0,160,0" Grid.Row="2" VerticalAlignment="Center" Width="170" Padding="5" Background="{x:Null}" BorderBrush="#FF5EB3E9" BorderThickness="2" Foreground="#FF5EB3E9" FontSize="16" Click="deleteSelected"/>
+            <Button x:Name="buttonDeleteLinks" Content="Удалить ярлыки" HorizontalAlignment="Right" Margin="0,0,340,0" Grid.Row="2" VerticalAlignment="Center" Width="170" Padding="5" Background="{x:Null}" BorderBrush="#FF5EB3E9" BorderThickness="2" Foreground="#FF5EB3E9" FontSize="16" Click="deleteLinks"/>
+        </Grid>
+        <Grid x:Name="gridSettings" Margin="0" Grid.Column="1" d:IsHidden="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition/>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="headerSettings" Content="Параметры программы" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" FontSize="26.667"/>
+            <Button x:Name="buttonSaveSettings" Content="Сохранить" HorizontalAlignment="Right" Margin="0,17,20,17" Grid.Row="3" VerticalAlignment="Center" Width="130" Padding="5" Background="{x:Null}" BorderBrush="#FF5EB3E9" BorderThickness="2" Foreground="#FF5EB3E9" FontSize="16" IsEnabled="False" Click="Save"/>
+            <Button x:Name="buttonCheckUpdates" Content="Проверить обновления" HorizontalAlignment="Left" Margin="20,0,0,0" Grid.Row="1" VerticalAlignment="Center" Width="200" Padding="5" Background="{x:Null}" BorderBrush="#FF5EB3E9" BorderThickness="2" Foreground="#FF5EB3E9" FontSize="16" Click="checkUpdates"/>
+            <TextBlock x:Name="updatesTextblock" HorizontalAlignment="Left" Margin="230,0,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <GroupBox x:Name="extensionsGroup" Header="Настройка расширений" Margin="3,10,3,3" Grid.Row="2">
+                <Grid Margin="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <ListView x:Name="listExtension" Margin="3" Grid.Row="1" ItemsSource="{Binding ExtensionsList}" IsSynchronizedWithCurrentItem="True">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Расширение" Width="120" DisplayMemberBinding="{Binding Name, Mode=OneWay}"/>
+                                <GridViewColumn Header="Описание" Width="400" DisplayMemberBinding="{Binding Description, Mode=OneWay}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <StackPanel Margin="3,3,0,3" Orientation="Horizontal">
+                        <Button x:Name="buttonAdd" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="Добавить новое расширение" Click="addNewExt">
+                            <Image Source="/Protego;component/Resources/add.png"></Image>
+                        </Button>
+                        <Button x:Name="buttonEdit" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="Редактировать расширение" Click="editCurrentExt">
+                            <Image Source="/Protego;component/Resources/edit.png"/>
+                        </Button>
+                        <Button x:Name="buttonRemove" Background="{x:Null}" BorderBrush="{x:Null}" ToolTip="Удалить расширение" Click="removeExt">
+                            <Image Source="/Protego;component/Resources/remove.png"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+        </Grid>
+
+    </Grid>
+</Window>
